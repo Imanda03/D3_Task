@@ -84,7 +84,7 @@ git clone https://github.com/Imanda03/D3_Task
 
 Install dependencies:
 
-cd covid-dashboard
+cd D3_Task
 npm install
 
 Start the development server:
