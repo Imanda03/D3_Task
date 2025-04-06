@@ -49,7 +49,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
             .attr("opacity", 0)
             .transition()
             .duration(800)
-            .delay((d, i) => i * 50)
+            .delay((_d, i) => i * 50)
             .attr("opacity", 0.8);
 
 
@@ -57,7 +57,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
             .attr("transform", `translate(0,${innerHeight})`)
             .call(d3.axisBottom(xScale)
                 .tickFormat((d: any) => d3.timeFormat("%m/%d")(d as Date))
-                .tickValues(xScale.domain().filter((d, i) => i % Math.ceil(data.length / 5) === 0))
+                .tickValues(xScale.domain().filter((_d, i) => i % Math.ceil(data.length / 5) === 0))
             );
 
         g.append("g")

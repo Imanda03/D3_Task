@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from './components/Header'
 import { CovidDataPoint, DailyChangeData, Metrictype, ScatterDataPoint } from './utils/types';
 import LineChart from './components/LineChart';
@@ -11,22 +11,23 @@ import { SummaryCard } from './components/SummaryCard';
 
 const App = () => {
   const [data, setData] = useState<CovidDataPoint[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
   const [selectedMetric, setSelectedMetric] = useState<Metrictype>('cases');
   const [dateRange, setDateRange] = useState<number>(30);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         const apiData = await fetchCovidData(dateRange);
         const transformedData = transformData(apiData);
         setData(transformedData);
-        setLoading(false);
+        // setLoading(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-        setLoading(false);
+        // setError(err instanceof Error ? err.message : 'An error occurred');
+        // setLoading(false);
+        console.log('error', err)
       }
     };
 

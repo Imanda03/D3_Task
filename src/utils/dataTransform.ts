@@ -56,7 +56,7 @@ export const linearRegression = (data: [number, number][]): RegressionResult => 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
 
-    const xMean = sumX / n;
+    // const xMean = sumX / n;
     const yMean = sumY / n;
 
     let SST = 0;
