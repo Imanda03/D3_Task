@@ -11,22 +11,16 @@ import { SummaryCard } from './components/SummaryCard';
 
 const App = () => {
   const [data, setData] = useState<CovidDataPoint[]>([]);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<string | null>(null);
   const [selectedMetric, setSelectedMetric] = useState<Metrictype>('cases');
   const [dateRange, setDateRange] = useState<number>(30);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // setLoading(true);
         const apiData = await fetchCovidData(dateRange);
         const transformedData = transformData(apiData);
         setData(transformedData);
-        // setLoading(false);
       } catch (err) {
-        // setError(err instanceof Error ? err.message : 'An error occurred');
-        // setLoading(false);
         console.log('error', err)
       }
     };
@@ -42,24 +36,36 @@ const App = () => {
       <Header />
       <div
         style={{
-          width: '100vw',
-          padding: '2rem'
-          // marginLeft: 'auto',
-          // marginRight: 'auto',
-          // paddingLeft: '1rem',
-          // paddingRight: '1rem',
-          // paddingTop: '2rem',
-          // paddingBottom: '2rem',
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '1rem',
         }}
       >
-
-        <div style={{ display: 'flex', gap: 4, marginBottom: 6, justifyContent: 'space-between', alignItems: 'center', marginLeft: 10, marginRight: 10, width: '90vw' }}>
+        {/* Controls Section */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: '1rem',
+            marginBottom: '1.5rem',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
           <div>
-            <label htmlFor='metric-select' style={{ marginRight: 2, }}>Select Metric:</label>
-            <select id="metric-select"
+            <label htmlFor='metric-select' style={{ marginRight: '0.5rem' }}>Select Metric:</label>
+            <select
+              id="metric-select"
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value as Metrictype)}
-              style={{ padding: 2, margin: 10, border: 1, borderRadius: 10 }}
+              style={{
+                padding: '0.5rem',
+                borderRadius: '0.25rem',
+                border: '1px solid #e2e8f0'
+              }}
             >
               <option value="cases">Cases</option>
               <option value="deaths">Deaths</option>
@@ -67,11 +73,16 @@ const App = () => {
             </select>
           </div>
           <div>
-            <label htmlFor='date-range' style={{ marginRight: 2, }}>Date Range (days):</label>
-            <select id="date-range"
+            <label htmlFor='date-range' style={{ marginRight: '0.5rem' }}>Date Range (days):</label>
+            <select
+              id="date-range"
               value={dateRange}
               onChange={(e) => setDateRange(parseInt(e.target.value))}
-              style={{ padding: 2, margin: 10, border: 1, borderRadius: 10 }}
+              style={{
+                padding: '0.5rem',
+                borderRadius: '0.25rem',
+                border: '1px solid #e2e8f0'
+              }}
             >
               <option value="7">Last 7 days</option>
               <option value="14">Last 14 days</option>
@@ -81,23 +92,43 @@ const App = () => {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', width: '80vw' }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
-          }}>
-            <h2 style={{ marginBottom: 2 }}>Cumulative {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)} Over Time</h2>
-            <LineChart data={data} metric={selectedMetric} />
-          </div>
-
+        {/* Charts Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '1.5rem',
+            width: '100%'
+          }}
+        >
+          {/* Line Chart */}
           <div
             style={{
               backgroundColor: 'white',
               padding: '1rem',
               borderRadius: '0.5rem',
               boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
+              gridColumn: '1 / -1',
+            }}
+          >
+            <h2 style={{
+              fontSize: '1.125rem',
+              fontWeight: 600,
+              marginBottom: '0.5rem'
+            }}>
+              Cumulative {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)} Over Time
+            </h2>
+            <LineChart data={data} metric={selectedMetric} />
+          </div>
+
+          {/* Bar Chart */}
+          <div
+            style={{
+              backgroundColor: 'white',
+              padding: '1rem',
+              borderRadius: '0.5rem',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
+              gridColumn: '1 / -1',
             }}
           >
             <h2
@@ -112,16 +143,15 @@ const App = () => {
             <BarChart data={dailyChangeData} />
           </div>
 
-
+          {/* Scatter Plot */}
           <div
             style={{
               backgroundColor: 'white',
               padding: '1rem',
               borderRadius: '0.5rem',
               boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
-              gridColumn: 'span 1',
+              gridColumn: '1 / -1', // Full width on smaller screens
             }}
-            className="responsive-grid-span"
           >
             <h2
               style={{
@@ -135,36 +165,34 @@ const App = () => {
             <ScatterPlot data={scatterData} />
           </div>
 
+          {/* Summary Cards */}
           <div
             style={{
               marginTop: '1.5rem',
               display: 'grid',
-              gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: '1rem',
+              gridColumn: '1 / -1',
             }}
-            className="responsive-grid"
           >
             <SummaryCard
               title="Total Cases"
-              value={data[data.length - 1]?.cases?.toLocaleString()}
+              value={data[data.length - 1]?.cases?.toLocaleString() || '0'}
               color="blue"
             />
             <SummaryCard
               title="Total Deaths"
-              value={data[data.length - 1]?.deaths?.toLocaleString()}
+              value={data[data.length - 1]?.deaths?.toLocaleString() || '0'}
               color="red"
             />
             <SummaryCard
               title="Latest Daily Increase"
-              value={dailyChangeData[dailyChangeData.length - 1]?.value?.toLocaleString()}
+              value={dailyChangeData[dailyChangeData.length - 1]?.value?.toLocaleString() || '0'}
               metric={selectedMetric}
               color="purple"
             />
-
           </div>
         </div>
-
-
       </div>
     </>
   )
